@@ -1,0 +1,15 @@
+version: '3'
+services:
+  cass:
+    image: cassandra
+    volumes:
+      - /home/vagrant/workspace/spring_stream/container/database/data:/var/lib/cassandra
+    ports:
+      - "9042:9042"
+  app:
+    build: ./app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - cass
+    command: ["./wait-for-it.sh", "cass:9042", "-t", "30", "--", "java", "-jar", "spring_stream-0.1-SNAPSHOT.jar"]
